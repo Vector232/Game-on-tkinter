@@ -4,6 +4,7 @@ from random import *
 from winsound import *
 import SaveWorker as sw
 import player as p
+import all_maps as am
 
 class Main_Class:
     #Создаем основное окно
@@ -188,22 +189,26 @@ class Main_Class:
         self.GameCanvas.pack()
 
         PlaySound(None, SND_PURGE)
+        # Размеры игрового поля
         self.scale = 40
         self.scale_x = self.height / self.scale
         self.scale_y = self.height / self.scale
+
+        self.free_action_points = 0
 
         if self.player.position == [-1, -1]:
             self.player.position = [self.scale_x * 20,  self.scale_y * 20]
 
         print('game_field -> Expanding')
         self.HP_bar()
-        self.game_field(map_=sw.map_1, quickload=quickload)
-        
+        self.game_field(map_=am.map_1, quickload=quickload)
+        self.InfoOnUI()
 
         self.window.bind("<Up>", self.player_move)
         self.window.bind("<Down>", self.player_move)
         self.window.bind("<Left>", self.player_move)
         self.window.bind("<Right>", self.player_move)
+        self.window.bind("<space>", self.player_move)
     
     def HP_bar(self):
         self.GameCanvas.delete('hp_bar')
@@ -213,7 +218,7 @@ class Main_Class:
         if hp == 0:
             print('YOU DEAD')
         while x < self.width and hp > 0:
-            self.GameCanvas.create_rectangle(x, 0, x + self.scale_x, self.scale_y, fill='#550000', tags = 'hp_bar')
+            self.GameCanvas.create_rectangle(x, 0, x + self.scale_x, self.scale_y, fill='#550000', tag = 'hp_bar')
             x += self.scale_x
             hp -= 100/self.scale
 
@@ -232,7 +237,7 @@ class Main_Class:
                 for _ in range(40):
                     plate_color = choice(colors)
                     self.all_plates.setdefault(plate_color, []).append([x, y])# сразу пополняем словарь плиток
-                    self.GameCanvas.create_rectangle(x, y, x + self.scale_x, y + self.scale_y, fill=plate_color, tags = 'gamefild')
+                    self.GameCanvas.create_rectangle(x, y, x + self.scale_x, y + self.scale_y, fill=plate_color, tag = 'gamefild')
                     y += self.scale_y
                 y = self.scale_y
                 x += self.scale_x
@@ -246,26 +251,26 @@ class Main_Class:
         else:
             colors = ['#005500', '#555555', '#999999', '#999999', '#999999', '#999999', '#999999', '#553300', '#999999']
             self.all_plates = {}
-            NPC_list = []
+            NPC_dict = am.map_1.NPSc
             x, y = [0, self.scale_y]
 
             self.GameCanvas.delete('gamefild', 'player', 'NPC')
 
-            for line in map_:
+            for line in map_.game_field:
                 for plate in line:
                     if plate == 'A': plate = 0
                     self.all_plates.setdefault(plate, []).append([x, y])
-                    self.GameCanvas.create_rectangle(x, y, x + self.scale_x, y + self.scale_y, fill=colors[plate], tags='gamefild')
+                    self.GameCanvas.create_rectangle(x, y, x + self.scale_x, y + self.scale_y, fill=colors[plate], tag='gamefild')
                     x += self.scale_x
                 x = 0
                 y += self.scale_y
 
             self.player_icon = self.GameCanvas.create_rectangle(self.player.position[0], self.player.position[1],\
                                                                 self.player.position[0] + self.scale_x, self.player.position[1] + self.scale_y,\
-                                                                fill='#992200', tags = 'player')
+                                                                fill='#992200', tag = 'player')
             
-            for NPC in NPC_list:
-                self.GameCanvas.create_rectangle(NPC.position[0], NPC.position[1], NPC.position[0] + self.scale_x, NPC.position[1] + self.scale_y, fill=NPC.color, tags='NPC')
+            for NPC in NPC_dict.keys():
+                self.GameCanvas.create_rectangle(NPC.position[0], NPC.position[1], NPC.position[0] + self.scale_x, NPC.position[1] + self.scale_y, fill=NPC.color, tag='NPC')
             
             print('game_field -> expanded')
 
@@ -295,6 +300,9 @@ class Main_Class:
         elif command.keysym == 'Right':
             move_x = self.scale_x
             move_x, move_y = self.next_turn_check([self.player.position[0] + move_x, self.player.position[1]], [move_x, move_y])
+        
+        elif command.keysym == 'space':
+            move_x, move_y = self.next_turn_check([self.player.position[0], self.player.position[1]], [move_x, move_y])
 
         self.GameCanvas.move(self.player_icon, move_x, move_y)
 
@@ -304,6 +312,10 @@ class Main_Class:
 
     #проверяет возможность или последствия следующего хода
     def next_turn_check(self, new_xy, move_xy):
+
+        self.free_action_points += 100
+        if self.free_action_points > 10000: self.free_action_points -= 10000
+
         x, y = new_xy
         move_x, move_y = move_xy
 
@@ -332,10 +344,20 @@ class Main_Class:
         self.player.position[0] += move_x
         self.player.position[1] += move_y
 
+        self.InfoOnUI()
+
         return [move_x, move_y]
 
     def logInfo(self, event):
         print(self.game_started)
+    
+    def InfoOnUI(self, event = None):
+            self.GameCanvas.delete('InfoOnUI')
+            self.GameCanvas.create_text(self.scale_x*45, self.scale_y, font=('Comic Sans MS', self.text_size), fill="#004100", text="Information", tag='InfoOnUI')
+            self.GameCanvas.create_text(self.scale_x*45, self.scale_y*4, font=('Comic Sans MS', self.text_size), fill="#004100", text="HP:  " + str(self.player.HP), tag='InfoOnUI')
+            self.GameCanvas.create_text(self.scale_x*45, self.scale_y*8, font=('Comic Sans MS', self.text_size), fill="#004100", text="AP: " + str(self.free_action_points), tag='InfoOnUI')
+            self.GameCanvas.create_text(self.scale_x*45, self.scale_y*12, font=('Comic Sans MS', self.text_size), fill="#004100", text="Enemy: " + str(len(am.map_1.NPSc.keys())), tag='InfoOnUI')
+
         
 
 app = Main_Class()

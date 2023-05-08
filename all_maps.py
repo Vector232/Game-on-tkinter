@@ -1,7 +1,7 @@
 class Map:
-    def __init__(self, NPCs, gameField):
+    def __init__(self, NPCs, game_field):
         self.NPSc = NPCs
-        self.gameField = gameField
+        self.game_field = game_field
 
 #Правила формирования игрового поля:
 # от 0 до 9  -> тайлы карты где:

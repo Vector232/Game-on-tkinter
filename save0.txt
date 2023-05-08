@@ -1,2 +1,2 @@
 game_started=True
-player_position=1026.0,891.0
+player_position=108.0,513.0
