@@ -269,6 +269,12 @@ class Main_Class:
                                                                 fill='#992200', tag = 'player')
             
             for NPC in NPC_dict:
+                print("!!!!!!!!!!", NPC_dict[NPC]['position'])
+                if NPC_dict[NPC]['position'] == [-1, -1, -1]:
+                    x, y, z = randrange(0, self.scale_x*39, self.scale_x), randrange(self.scale_y, self.scale_x*39, self.scale_y), 0
+                    NPC_dict[NPC]['position'] = [x, y, z]
+                    am.all_maps['level_1'][0]['NPCs'][NPC]['position'] = [x, y, z]
+
                 self.GameCanvas.create_rectangle(NPC_dict[NPC]['position'][0], NPC_dict[NPC]['position'][1], NPC_dict[NPC]['position'][0] + self.scale_x,\
                                                  NPC_dict[NPC]['position'][1] + self.scale_y, fill=NPC_dict[NPC]['color'], tag='NPC')
             

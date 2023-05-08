@@ -6,9 +6,15 @@ class Map:
         self.name = name
         self.NPCs = NPCs
         self.game_field = game_field
-    
+
     def __str__(self) -> str:
         return f'map: {self.name}'
+    
+    def dictConverter(self, dict):
+        self.name = dict['name']
+        self.NPCs = dict['NPCs']
+        self.game_field = dict['game_field']
+
 
 all_maps = {'level_1': []}
 
@@ -25,8 +31,8 @@ all_maps = {'level_1': []}
 # A - глубый моб
 
 name = 'map_1'
-NPCs = {'black_swarm_2lvl': anpc.NPC('black_swarm', 2, 10, '#444444', [5, 5, 5]).__dict__,\
-        'black_swarm_3lvl': anpc.NPC('black_swarm', 3, 10, '#444444', [25, 25, 25]).__dict__}
+NPCs = {'black_swarm_2lvl': anpc.NPC('black_swarm', 2, 10, '#444444').__dict__,\
+        'black_swarm_3lvl': anpc.NPC('black_swarm', 3, 10, '#444444').__dict__}
 game_field=[[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
             [1, 0, 0, 0, 0, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -69,8 +75,8 @@ game_field=[[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
 all_maps['level_1'].append(Map(name, NPCs, game_field).__dict__)
 
 name = 'map_2'
-NPCs = {'black_swarm_20lvl': anpc.NPC('black_swarm', 20, 10, '#444444', [5, 5, 5]),\
-        'black_swarm_90lvl': anpc.NPC('black_swarm', 90, 10, '#444444', [25, 25, 25])}
+NPCs = {'black_swarm_20lvl': anpc.NPC('black_swarm', 20, 10, '#444444').__dict__,\
+        'black_swarm_90lvl': anpc.NPC('black_swarm', 90, 10, '#444444').__dict__}
 game_field = [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
             [1, 0, 0, 0, 0, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
