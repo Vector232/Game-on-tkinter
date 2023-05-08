@@ -22,6 +22,7 @@ class Main_Class:
         self.text_size = 35
 
         self.game_started = False
+        self.free_action_points = 0
         self.player = p.Player()
         
         try:
@@ -193,8 +194,6 @@ class Main_Class:
         self.scale = 40
         self.scale_x = self.height / self.scale
         self.scale_y = self.height / self.scale
-
-        self.free_action_points = 0
 
         if self.player.position == [-1, -1]:
             self.player.position = [self.scale_x * 20,  self.scale_y * 20]
