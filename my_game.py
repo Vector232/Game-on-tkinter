@@ -250,14 +250,13 @@ class Main_Class:
         else:
             colors = ['#005500', '#555555', '#999999', '#999999', '#999999', '#999999', '#999999', '#553300', '#999999']
             self.all_plates = {}
-            NPC_dict = am.map_1.NPSc
+            NPC_list = am.map_1.NPSc
             x, y = [0, self.scale_y]
 
             self.GameCanvas.delete('gamefild', 'player', 'NPC')
 
             for line in map_.game_field:
                 for plate in line:
-                    if plate == 'A': plate = 0
                     self.all_plates.setdefault(plate, []).append([x, y])
                     self.GameCanvas.create_rectangle(x, y, x + self.scale_x, y + self.scale_y, fill=colors[plate], tag='gamefild')
                     x += self.scale_x
@@ -268,7 +267,7 @@ class Main_Class:
                                                                 self.player.position[0] + self.scale_x, self.player.position[1] + self.scale_y,\
                                                                 fill='#992200', tag = 'player')
             
-            for NPC in NPC_dict.keys():
+            for NPC in NPC_list:
                 self.GameCanvas.create_rectangle(NPC.position[0], NPC.position[1], NPC.position[0] + self.scale_x, NPC.position[1] + self.scale_y, fill=NPC.color, tag='NPC')
             
             print('game_field -> expanded')
