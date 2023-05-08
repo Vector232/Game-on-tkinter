@@ -200,7 +200,8 @@ class Main_Class:
 
         print('game_field -> Expanding')
         self.HP_bar()
-        self.game_field(map_=am.map_1, quickload=quickload)
+
+        self.game_field(am.all_maps['level_1'][0])
         self.InfoOnUI()
 
         self.window.bind("<Up>", self.player_move)
@@ -222,7 +223,7 @@ class Main_Class:
             hp -= 100/self.scale
 
     # Рисует игровое поле по умолчанию или заданное поле
-    def game_field(self, map_ = None, quickload = False):
+    def game_field(self, map_ = None):
         # Поле по умолчанию
         if map_ == None:
             colors = ['#001100', '#002200', '#003300', '#004400', '#000000']
@@ -250,12 +251,12 @@ class Main_Class:
         else:
             colors = ['#005500', '#555555', '#999999', '#999999', '#999999', '#999999', '#999999', '#553300', '#999999']
             self.all_plates = {}
-            NPC_list = am.map_1.NPSc
+            NPC_dict = map_['NPCs']
             x, y = [0, self.scale_y]
 
             self.GameCanvas.delete('gamefild', 'player', 'NPC')
 
-            for line in map_.game_field:
+            for line in map_['game_field']:
                 for plate in line:
                     self.all_plates.setdefault(plate, []).append([x, y])
                     self.GameCanvas.create_rectangle(x, y, x + self.scale_x, y + self.scale_y, fill=colors[plate], tag='gamefild')
@@ -267,8 +268,9 @@ class Main_Class:
                                                                 self.player.position[0] + self.scale_x, self.player.position[1] + self.scale_y,\
                                                                 fill='#992200', tag = 'player')
             
-            for NPC in NPC_list:
-                self.GameCanvas.create_rectangle(NPC.position[0], NPC.position[1], NPC.position[0] + self.scale_x, NPC.position[1] + self.scale_y, fill=NPC.color, tag='NPC')
+            for NPC in NPC_dict:
+                self.GameCanvas.create_rectangle(NPC_dict[NPC]['position'][0], NPC_dict[NPC]['position'][1], NPC_dict[NPC]['position'][0] + self.scale_x,\
+                                                 NPC_dict[NPC]['position'][1] + self.scale_y, fill=NPC_dict[NPC]['color'], tag='NPC')
             
             print('game_field -> expanded')
 
@@ -354,7 +356,6 @@ class Main_Class:
             self.GameCanvas.create_text(self.scale_x*45, self.scale_y, font=('Comic Sans MS', self.text_size), fill="#004100", text="Information", tag='InfoOnUI')
             self.GameCanvas.create_text(self.scale_x*45, self.scale_y*4, font=('Comic Sans MS', self.text_size), fill="#004100", text="HP:  " + str(self.player.HP), tag='InfoOnUI')
             self.GameCanvas.create_text(self.scale_x*45, self.scale_y*8, font=('Comic Sans MS', self.text_size), fill="#004100", text="AP: " + str(self.free_action_points), tag='InfoOnUI')
-            self.GameCanvas.create_text(self.scale_x*45, self.scale_y*12, font=('Comic Sans MS', self.text_size), fill="#004100", text="Enemy: " + str(len(am.map_1.NPSc.keys())), tag='InfoOnUI')
 
         
 

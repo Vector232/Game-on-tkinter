@@ -4,6 +4,9 @@ class NPC:
         self.HP = HP + HP * lvl * 0.5
         self.color = color
         self.position = position[0:3]
+    
+    def __str__(self):
+        return self.name
 
 
 
