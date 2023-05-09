@@ -1,10 +1,11 @@
 # Читает файл сохранения
 import json
-import all_maps as am
+import pickle
+import maps.all_maps as AM
 
 def importSaves(main):
-    with open('save0.json', 'r', encoding='utf8') as f:
-        data = json.load(f)
+    with open('saves/save0.pickle', 'rb') as f:
+        data = pickle.load(f)
         # загружаем состояние игры
         main.game_started = data['game']['game_started']
         main.free_action_points = data['game']['AP']
@@ -12,7 +13,7 @@ def importSaves(main):
         main.player.position = data['player']['player_position']
         main.player.HP = data['player']['player_HP']
         # загружаем состояние всех игровых карт
-        am.all_maps = data['maps']
+        AM.all_levels = data['maps']
         
        
 
@@ -21,7 +22,7 @@ def importSaves(main):
 # Пишет файл сохранения
 def exportSaves(main):
     data = {}
-    with open('save0.json', 'w', encoding='utf8') as f:
+    with open('saves/save0.pickle', 'wb') as f:
         # сохраняем игры
         data['game'] = {}
         data['game']['game_started'] = main.game_started
@@ -32,6 +33,6 @@ def exportSaves(main):
         data['player']['player_position'] = [main.player.position[0], main.player.position[1]]
         data['player']['player_HP'] = main.player.HP
         # сохраняем состояние всех игровых карт
-        data['maps'] = am.all_maps
-        json.dump(data, f)
+        data['maps'] = AM.all_levels
+        pickle.dump(data, f)
     print('Sim-Saved')

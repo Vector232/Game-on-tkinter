@@ -4,7 +4,7 @@ from random import *
 from winsound import *
 import SaveWorker as sw
 import player as p
-import all_maps as am
+import maps.all_maps as am
 
 class Main_Class:
     #Создаем основное окно
@@ -200,8 +200,8 @@ class Main_Class:
 
         print('game_field -> Expanding')
         self.HP_bar()
-
-        self.game_field(am.all_maps['level_1'][0])
+        self.map_ = am.all_levels['level_1'][0]
+        self.game_field()
         self.InfoOnUI()
 
         self.window.bind("<Up>", self.player_move)
@@ -223,9 +223,9 @@ class Main_Class:
             hp -= 100/self.scale
 
     # Рисует игровое поле по умолчанию или заданное поле
-    def game_field(self, map_ = None):
+    def game_field(self):
         # Поле по умолчанию
-        if map_ == None:
+        if self.map_ == None:
             colors = ['#001100', '#002200', '#003300', '#004400', '#000000']
             self.all_plates = {}
             NPC_list = []
@@ -251,12 +251,13 @@ class Main_Class:
         else:
             colors = ['#005500', '#555555', '#999999', '#999999', '#999999', '#999999', '#999999', '#553300', '#999999']
             self.all_plates = {}
-            NPC_dict = map_['NPCs']
+            NPCs = self.map_.NPCs
+            game_field = self.map_.game_field
             x, y = [0, self.scale_y]
 
             self.GameCanvas.delete('gamefild', 'player', 'NPC')
 
-            for line in map_['game_field']:
+            for line in game_field:
                 for plate in line:
                     self.all_plates.setdefault(plate, []).append([x, y])
                     self.GameCanvas.create_rectangle(x, y, x + self.scale_x, y + self.scale_y, fill=colors[plate], tag='gamefild')
@@ -268,15 +269,14 @@ class Main_Class:
                                                                 self.player.position[0] + self.scale_x, self.player.position[1] + self.scale_y,\
                                                                 fill='#992200', tag = 'player')
             
-            for NPC in NPC_dict:
-                print("!!!!!!!!!!", NPC_dict[NPC]['position'])
-                if NPC_dict[NPC]['position'] == [-1, -1, -1]:
-                    x, y, z = randrange(0, self.scale_x*39, self.scale_x), randrange(self.scale_y, self.scale_x*39, self.scale_y), 0
-                    NPC_dict[NPC]['position'] = [x, y, z]
-                    am.all_maps['level_1'][0]['NPCs'][NPC]['position'] = [x, y, z]
+            for NPC in NPCs:
+                if NPC.position == [-1, -1, -1]:
+                    x, y, z = randint(0, 39), randint(1, 39), 0
+                else:
+                    x, y, z = NPC.position
 
-                self.GameCanvas.create_rectangle(NPC_dict[NPC]['position'][0], NPC_dict[NPC]['position'][1], NPC_dict[NPC]['position'][0] + self.scale_x,\
-                                                 NPC_dict[NPC]['position'][1] + self.scale_y, fill=NPC_dict[NPC]['color'], tag='NPC')
+                self.GameCanvas.create_rectangle(x*self.scale_x, y*self.scale_y, x*self.scale_x + self.scale_x,\
+                                                 y*self.scale_y + self.scale_y, fill=NPC.color, tag='NPC')
             
             print('game_field -> expanded')
 
